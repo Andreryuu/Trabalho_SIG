@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Pesagem - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://kit.fontawesome.com/a2e0e6a4f3.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #f2f2f2;
+      --text: #333;
+      --card: #fff;
+      --button: #e53935;
+      --button-hover: #c62828;
+      --header-bg: #e53935;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #eee;
+      --card: #1f1f1f;
+      --button: #f44336;
+      --button-hover: #e53935;
+      --header-bg: #b71c1c;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Estilos da tela de login */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      background-image: url('https://images6.alphacoders.com/341/thumb-1920-341782.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.8;
+    }
+
+
+    .login-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('pexels-mvdheuvel-2676842.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px);
+      opacity: 0.7;
+      z-index: -1;
+    }
+
+    .login-card {
+      background-color: rgba(255, 255, 255, 0.942);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    body.dark .login-card {
+      background-color: rgba(31, 31, 31, 0.9);
+    }
+
+    .login-card h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .login-form .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .login-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--button);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .login-button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .login-links {
+      font-size: 14px;
+    }
+
+    .login-links a {
+      color: var(--button);
+      text-decoration: none;
+    }
+
+    .login-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Estilos do conteúdo principal (oculto inicialmente) */
+    .main-content {
+      display: none;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-switch input[type="checkbox"] {
+      display: none;
+    }
+
+    .slider {
+      width: 50px;
+      height: 24px;
+      background-color: #ccc;
+      border-radius: 24px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .slider::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: 0.3s;
+    }
+
+    input[type="checkbox"]:checked + .slider {
+      background-color: #4caf50;
+    }
+
+    input[type="checkbox"]:checked + .slider::before {
+      transform: translateX(26px);
+    }
+
+    main {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    form {
+      background-color: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h2, h3 {
+      margin-top: 0;
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: white;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: var(--button);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .inline-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 20px;
+      }
+
+      form {
+        padding: 15px;
+      }
+
+      .inline-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Tela de Login -->
+  <div class="login-container" id="loginContainer">
+    <div class="login-card">
+      <h2>Login</h2>
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="username">Usuário</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="login-options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember">
+            <label for="remember">Lembre-me</label>
+          </div>
+          <a href="#" class="forgot-password">Esquece a senha?</a>
+        </div>
+        <button type="button" class="login-button" onclick="login()">Login</button>
+      </form>
+      <div class="login-links">
+        <p>Não tem conta? <a href="#" onclick="alert('Funcionalidade de registro não implementada')">Registrar</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo principal (inicialmente oculto) -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <h1>Controle de Pesagem</h1>
+      <label class="toggle-switch">
+        <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+        <span class="slider"></span>
+      </label>
+    </header>
+
+    <main>
+      <form id="formFornecedor">
+        <h2>Cadastro de Fornecedores</h2>
+        <div class="form-group">
+          <label>Nome da Empresa:</label>
+          <input type="text" name="empresa">
+        </div>
+        <div class="form-group">
+          <label>CNPJ:</label>
+          <input type="text" name="cnpj">
+        </div>
+        <div class="form-group">
+          <label>Inscrição Estadual:</label>
+          <input type="text" name="ie">
+        </div>
+        <div class="form-group">
+          <label>CNAE:</label>
+          <input type="text" name="cnae">
+        </div>
+        <div class="form-group">
+          <label>Dados Bancários:</label>
+          <input type="text" name="banco">
+        </div>
+        <div class="form-group">
+          <label>Tipos de Fluidos Fornecidos:</label>
+          <input type="text" name="fluidos">
+        </div>
+        <div class="inline-buttons">
+          <button type="button" onclick="exportarFornecedor()"><i class="fas fa-file-export"></i> Exportar</button>
+        </div>
+      </form>
+
+      <form id="formFrota">
+        <h2>Cadastro de Frota e Motoristas</h2>
+        <h3>Dados do Caminhão</h3>
+        <div class="form-group">
+          <label>Placa:</label>
+          <input type="text" name="placa">
+        </div>
+        <div class="form-group">
+          <label>Peso do Veículo (kg):</label>
+          <input type="number" name="peso">
+        </div>
+        <div class="form-group">
+          <label>Número de Eixos:</label>
+          <input type="number" name="eixos">
+        </div>
+        <div class="form-group">
+          <label>Número do Chassi:</label>
+          <input type="text" name="chassi">
+        </div>
+        <div class="form-group">
+          <label>Ano:</label>
+          <input type="number" name="ano">
+        </div>
+        <div class="form-group">
+          <label>Marca:</label>
+          <input type="text" name="marca">
+        </div>
+        <div class="form-group">
+          <label>Capacidade Máxima (kg):</label>
+          <input type="number" name="capacidade">
+        </div>
+
+        <h3>Dados do Motorista</h3>
+        <div class="form-group">
+          <label>CPF:</label>
+          <input type="text" name="cpf">
+        </div>
+        <div class="form-group">
+          <label>RG:</label>
+          <input type="text" name="rg">
+        </div>
+        <div class="form-group">
+          <label>Data de Nascimento:</label>
+          <input type="date" name="nascimento">
+        </div>
+        <div class="form-group">
+          <label>Nº da CNH:</label>
+          <input type="text" name="cnh">
+        </div>
+        <div class="form-group">
+          <label>Nº da Carteira de Trabalho:</label>
+          <input type="text" name="ctps">
+        </div>
+        <div class="inline-buttons">
+          <button type="button" onclick="exportarFrota()"><i class="fas fa-file-export"></i> Exportar</button>
+        </div>
+      </form>
+
+      <form id="formPesagem">
+        <h2>Registro da Pesagem</h2>
+        <div class="form-group">
+          <label>Placa do Caminhão:</label>
+          <input type="text" name="placa_verificacao" required>
+        </div>
+        <div class="form-group">
+          <label>CPF do Motorista:</label>
+          <input type="text" name="cpf_verificacao" required>
+        </div>
+        <div class="form-group">
+          <label>Tipo de Fluído Entregue:</label>
+          <input type="text" name="fluido_entregue" required>
+        </div>
+        <div class="form-group">
+          <label>Peso Bruto (kg):</label>
+          <input type="number" id="peso_bruto" required>
+        </div>
+        <div class="form-group">
+          <label>Tara (kg):</label>
+          <input type="number" id="tara" required>
+        </div>
+        <div class="form-group">
+          <label>Quantidade de Fluído (calculada):</label>
+          <input type="number" id="quantidade_fluido" readonly>
+        </div>
+        <div class="inline-buttons">
+          <button type="button" onclick="calcularFluido()"><i class="fas fa-balance-scale"></i> Calcular</button>
+          <button type="button" onclick="exportarPesagem()"><i class="fas fa-file-export"></i> Exportar</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // Função para fazer login (simplificada para demonstração)
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Validação simples - em um sistema real, isso seria feito no servidor
+      if (username && password) {
+        // Esconde a tela de login e mostra o conteúdo principal
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        document.title = 'Controle de Pesagem';
+      } else {
+        alert('Por favor, preencha todos os campos.');
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
+
+    function aplicarEstilo(ws, dados) {
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cell_address = { c: C, r: R };
+          const cell_ref = XLSX.utils.encode_cell(cell_address);
+          if (!ws[cell_ref]) continue;
+          ws[cell_ref].s = {
+            alignment: { horizontal: "center", vertical: "center" },
+            border: {
+              top: { style: "thin", color: { auto: 1 } },
+              bottom: { style: "thin", color: { auto: 1 } },
+              left: { style: "thin", color: { auto: 1 } },
+              right: { style: "thin", color: { auto: 1 } }
+            }
+          };
+        }
+      }
+
+      const colWidths = Object.keys(dados[0]).map(key => {
+        const maxLen = Math.max(
+          key.length,
+          ...dados.map(row => (row[key] ? String(row[key]).length : 0))
+        );
+        return { wch: maxLen + 2 };
+      });
+      ws['!cols'] = colWidths;
+    }
+
+    function exportarFornecedor() {
+      const form = document.getElementById('formFornecedor');
+      const data = [{
+        "Empresa": form.empresa.value,
+        "CNPJ": form.cnpj.value,
+        "Inscrição Estadual": form.ie.value,
+        "CNAE": form.cnae.value,
+        "Dados Bancários": form.banco.value,
+        "Fluidos Fornecidos": form.fluidos.value
+      }];
+      const ws = XLSX.utils.json_to_sheet(data);
+      aplicarEstilo(ws, data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Fornecedor");
+      XLSX.writeFile(wb, "cadastro_fornecedor.xlsx");
+    }
+
+    function exportarFrota() {
+      const form = document.getElementById('formFrota');
+      const data = [{
+        "Placa": form.placa.value,
+        "Peso": form.peso.value,
+        "Eixos": form.eixos.value,
+        "Chassi": form.chassi.value,
+        "Ano": form.ano.value,
+        "Marca": form.marca.value,
+        "Capacidade": form.capacidade.value,
+        "CPF": form.cpf.value,
+        "RG": form.rg.value,
+        "Nascimento": form.nascimento.value,
+        "CNH": form.cnh.value,
+        "CTPS": form.ctps.value
+      }];
+      const ws = XLSX.utils.json_to_sheet(data);
+      aplicarEstilo(ws, data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Frota");
+      XLSX.writeFile(wb, "cadastro_frota_motorista.xlsx");
+    }
+
+    function exportarPesagem() {
+      const form = document.getElementById('formPesagem');
+      const data = [{
+        "Placa": form.placa_verificacao.value,
+        "CPF Motorista": form.cpf_verificacao.value,
+        "Fluído Entregue": form.fluido_entregue.value,
+        "Peso Bruto": document.getElementById('peso_bruto').value,
+        "Tara": document.getElementById('tara').value,
+        "Quantidade Fluído": document.getElementById('quantidade_fluido').value
+      }];
+      const ws = XLSX.utils.json_to_sheet(data);
+      aplicarEstilo(ws, data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Pesagem");
+      XLSX.writeFile(wb, "registro_pesagem.xlsx");
+    }
+
+    function calcularFluido() {
+      const pesoBruto = parseFloat(document.getElementById('peso_bruto').value);
+      const tara = parseFloat(document.getElementById('tara').value);
+      const resultado = document.getElementById('quantidade_fluido');
+      if (!isNaN(pesoBruto) && !isNaN(tara) && pesoBruto >= tara) {
+        resultado.value = pesoBruto - tara;
+      } else {
+        resultado.value = '';
+        alert("Valores inválidos. Certifique-se de que o peso bruto é maior que a tara.");
+      }
+    }
+  </script>
+</body>
+</html>
