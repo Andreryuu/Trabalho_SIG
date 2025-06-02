@@ -14,6 +14,8 @@
       --button: #e53935;
       --button-hover: #c62828;
       --header-bg: #e53935;
+      --sidebar-bg: #2c3e50;
+      --sidebar-active: #34495e;
     }
 
     body.dark {
@@ -23,6 +25,8 @@
       --button: #f44336;
       --button-hover: #e53935;
       --header-bg: #b71c1c;
+      --sidebar-bg: #1a1a1a;
+      --sidebar-active: #2a2a2a;
     }
 
     body {
@@ -50,7 +54,6 @@
       background-position: center;
       opacity: 0.8;
     }
-
 
     .login-container::before {
       content: "";
@@ -156,6 +159,7 @@
     /* Estilos do conteúdo principal (oculto inicialmente) */
     .main-content {
       display: none;
+      flex-grow: 1;
     }
 
     header {
@@ -212,18 +216,71 @@
       transform: translateX(26px);
     }
 
-    main {
-      padding: 20px;
+    /* Layout principal com sidebar */
+    .app-container {
       display: flex;
-      flex-direction: column;
-      gap: 40px;
+      flex-grow: 1;
     }
 
-    form {
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: white;
+      padding: 20px 0;
+      transition: width 0.3s;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 10px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-menu li:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu li.active {
+      background-color: var(--sidebar-active);
+    }
+
+    .sidebar-menu li i {
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-panel {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* Estilos dos formulários */
+    .form-section {
+      display: none;
       background-color: var(--card);
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-pesagem {
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     h2, h3 {
@@ -249,6 +306,11 @@
       background: white;
     }
 
+    .form-pesagem input {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
     button {
       padding: 10px 15px;
       background-color: var(--button);
@@ -272,17 +334,36 @@
       margin-top: 10px;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar-menu li {
+        padding: 10px 15px;
+        white-space: nowrap;
+      }
+
       header h1 {
         font-size: 20px;
       }
 
-      form {
-        padding: 15px;
+      .form-pesagem {
+        max-width: 100%;
       }
 
-      .inline-buttons {
-        flex-direction: column;
+      .form-pesagem input {
+        max-width: 100%;
       }
     }
   </style>
@@ -326,128 +407,152 @@
       </label>
     </header>
 
-    <main>
-      <form id="formFornecedor">
-        <h2>Cadastro de Fornecedores</h2>
-        <div class="form-group">
-          <label>Nome da Empresa:</label>
-          <input type="text" name="empresa">
-        </div>
-        <div class="form-group">
-          <label>CNPJ:</label>
-          <input type="text" name="cnpj">
-        </div>
-        <div class="form-group">
-          <label>Inscrição Estadual:</label>
-          <input type="text" name="ie">
-        </div>
-        <div class="form-group">
-          <label>CNAE:</label>
-          <input type="text" name="cnae">
-        </div>
-        <div class="form-group">
-          <label>Dados Bancários:</label>
-          <input type="text" name="banco">
-        </div>
-        <div class="form-group">
-          <label>Tipos de Fluidos Fornecidos:</label>
-          <input type="text" name="fluidos">
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="exportarFornecedor()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
+    <div class="app-container">
+      <!-- Menu lateral -->
+      <nav class="sidebar">
+        <ul class="sidebar-menu">
+          <li class="active" onclick="showSection('fornecedor')">
+            <i class="fas fa-truck"></i>
+            <span>Fornecedores</span>
+          </li>
+          <li onclick="showSection('frota')">
+            <i class="fas fa-truck-moving"></i>
+            <span>Frota e Motoristas</span>
+          </li>
+          <li onclick="showSection('pesagem')">
+            <i class="fas fa-balance-scale-right"></i>
+            <span>Registro de Pesagem</span>
+          </li>
+        </ul>
+      </nav>
 
-      <form id="formFrota">
-        <h2>Cadastro de Frota e Motoristas</h2>
-        <h3>Dados do Caminhão</h3>
-        <div class="form-group">
-          <label>Placa:</label>
-          <input type="text" name="placa">
-        </div>
-        <div class="form-group">
-          <label>Peso do Veículo (kg):</label>
-          <input type="number" name="peso">
-        </div>
-        <div class="form-group">
-          <label>Número de Eixos:</label>
-          <input type="number" name="eixos">
-        </div>
-        <div class="form-group">
-          <label>Número do Chassi:</label>
-          <input type="text" name="chassi">
-        </div>
-        <div class="form-group">
-          <label>Ano:</label>
-          <input type="number" name="ano">
-        </div>
-        <div class="form-group">
-          <label>Marca:</label>
-          <input type="text" name="marca">
-        </div>
-        <div class="form-group">
-          <label>Capacidade Máxima (kg):</label>
-          <input type="number" name="capacidade">
-        </div>
+      <!-- Painel principal -->
+      <div class="main-panel">
+        <!-- Seção de Fornecedores -->
+        <form id="formFornecedor" class="form-section active">
+          <h2><i class="fas fa-truck"></i> Cadastro de Fornecedores</h2>
+          <div class="form-group">
+            <label>Nome da Empresa:</label>
+            <input type="text" name="empresa">
+          </div>
+          <div class="form-group">
+            <label>CNPJ:</label>
+            <input type="text" name="cnpj">
+          </div>
+          <div class="form-group">
+            <label>Inscrição Estadual:</label>
+            <input type="text" name="ie">
+          </div>
+          <div class="form-group">
+            <label>CNAE:</label>
+            <input type="text" name="cnae">
+          </div>
+          <div class="form-group">
+            <label>Dados Bancários:</label>
+            <input type="text" name="banco">
+          </div>
+          <div class="form-group">
+            <label>Tipos de Fluidos Fornecidos:</label>
+            <input type="text" name="fluidos">
+          </div>
+          <div class="inline-buttons">
+            <button type="button" onclick="exportarFornecedor()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
 
-        <h3>Dados do Motorista</h3>
-        <div class="form-group">
-          <label>CPF:</label>
-          <input type="text" name="cpf">
-        </div>
-        <div class="form-group">
-          <label>RG:</label>
-          <input type="text" name="rg">
-        </div>
-        <div class="form-group">
-          <label>Data de Nascimento:</label>
-          <input type="date" name="nascimento">
-        </div>
-        <div class="form-group">
-          <label>Nº da CNH:</label>
-          <input type="text" name="cnh">
-        </div>
-        <div class="form-group">
-          <label>Nº da Carteira de Trabalho:</label>
-          <input type="text" name="ctps">
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="exportarFrota()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
+        <!-- Seção de Frota -->
+        <form id="formFrota" class="form-section">
+          <h2><i class="fas fa-truck-moving"></i> Cadastro de Frota e Motoristas</h2>
+          <h3>Dados do Caminhão</h3>
+          <div class="form-group">
+            <label>Placa:</label>
+            <input type="text" name="placa">
+          </div>
+          <div class="form-group">
+            <label>Peso do Veículo (kg):</label>
+            <input type="number" name="peso">
+          </div>
+          <div class="form-group">
+            <label>Número de Eixos:</label>
+            <input type="number" name="eixos">
+          </div>
+          <div class="form-group">
+            <label>Número do Chassi:</label>
+            <input type="text" name="chassi">
+          </div>
+          <div class="form-group">
+            <label>Ano:</label>
+            <input type="number" name="ano">
+          </div>
+          <div class="form-group">
+            <label>Marca:</label>
+            <input type="text" name="marca">
+          </div>
+          <div class="form-group">
+            <label>Capacidade Máxima (kg):</label>
+            <input type="number" name="capacidade">
+          </div>
 
-      <form id="formPesagem">
-        <h2>Registro da Pesagem</h2>
-        <div class="form-group">
-          <label>Placa do Caminhão:</label>
-          <input type="text" name="placa_verificacao" required>
-        </div>
-        <div class="form-group">
-          <label>CPF do Motorista:</label>
-          <input type="text" name="cpf_verificacao" required>
-        </div>
-        <div class="form-group">
-          <label>Tipo de Fluído Entregue:</label>
-          <input type="text" name="fluido_entregue" required>
-        </div>
-        <div class="form-group">
-          <label>Peso Bruto (kg):</label>
-          <input type="number" id="peso_bruto" required>
-        </div>
-        <div class="form-group">
-          <label>Tara (kg):</label>
-          <input type="number" id="tara" required>
-        </div>
-        <div class="form-group">
-          <label>Quantidade de Fluído (calculada):</label>
-          <input type="number" id="quantidade_fluido" readonly>
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="calcularFluido()"><i class="fas fa-balance-scale"></i> Calcular</button>
-          <button type="button" onclick="exportarPesagem()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
-    </main>
+          <h3>Dados do Motorista</h3>
+          <div class="form-group">
+            <label>CPF:</label>
+            <input type="text" name="cpf">
+          </div>
+          <div class="form-group">
+            <label>RG:</label>
+            <input type="text" name="rg">
+          </div>
+          <div class="form-group">
+            <label>Data de Nascimento:</label>
+            <input type="date" name="nascimento">
+          </div>
+          <div class="form-group">
+            <label>Nº da CNH:</label>
+            <input type="text" name="cnh">
+          </div>
+          <div class="form-group">
+            <label>Nº da Carteira de Trabalho:</label>
+            <input type="text" name="ctps">
+          </div>
+          <div class="inline-buttons">
+            <button type="button" onclick="exportarFrota()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
+
+        <!-- Seção de Pesagem -->
+        <form id="formPesagem" class="form-section form-pesagem">
+          <h2><i class="fas fa-balance-scale-right"></i> Registro da Pesagem</h2>
+          <div class="form-group">
+            <label>Placa do Caminhão:</label>
+            <input type="text" name="placa_verificacao" required>
+          </div>
+          <div class="form-group">
+            <label>CPF do Motorista:</label>
+            <input type="text" name="cpf_verificacao" required>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Fluído Entregue:</label>
+            <input type="text" name="fluido_entregue" required>
+          </div>
+          <div class="form-group">
+            <label>Peso Bruto (kg):</label>
+            <input type="number" id="peso_bruto" required>
+          </div>
+          <div class="form-group">
+            <label>Tara (kg):</label>
+            <input type="number" id="tara" required>
+          </div>
+          <div class="form-group">
+            <label>Quantidade de Fluído (calculada):</label>
+            <input type="number" id="quantidade_fluido" readonly>
+          </div>
+          <div class="inline-buttons" style="justify-content: center;">
+            <button type="button" onclick="calcularFluido()"><i class="fas fa-balance-scale"></i> Calcular</button>
+            <button type="button" onclick="exportarPesagem()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -469,6 +574,23 @@
 
     function toggleTheme() {
       document.body.classList.toggle('dark');
+    }
+
+    // Função para mostrar a seção selecionada
+    function showSection(sectionId) {
+      // Esconde todas as seções
+      document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Mostra a seção selecionada
+      document.getElementById('form' + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.add('active');
+      
+      // Atualiza o menu ativo
+      document.querySelectorAll('.sidebar-menu li').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
     }
 
     function aplicarEstilo(ws, dados) {

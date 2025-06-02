@@ -13,7 +13,11 @@
       --card: #fff;
       --button: #e53935;
       --button-hover: #c62828;
+      --button-save: #4CAF50;
+      --button-save-hover: #388E3C;
       --header-bg: #e53935;
+      --sidebar-bg: #2c3e50;
+      --sidebar-active: #34495e;
     }
 
     body.dark {
@@ -22,7 +26,11 @@
       --card: #1f1f1f;
       --button: #f44336;
       --button-hover: #e53935;
+      --button-save: #2E7D32;
+      --button-save-hover: #1B5E20;
       --header-bg: #b71c1c;
+      --sidebar-bg: #1a1a1a;
+      --sidebar-active: #2a2a2a;
     }
 
     body {
@@ -50,7 +58,6 @@
       background-position: center;
       opacity: 0.8;
     }
-
 
     .login-container::before {
       content: "";
@@ -156,6 +163,7 @@
     /* Estilos do conteúdo principal (oculto inicialmente) */
     .main-content {
       display: none;
+      flex-grow: 1;
     }
 
     header {
@@ -212,27 +220,85 @@
       transform: translateX(26px);
     }
 
-    main {
-      padding: 20px;
+    /* Layout principal com sidebar */
+    .app-container {
       display: flex;
-      flex-direction: column;
-      gap: 40px;
+      flex-grow: 1;
     }
 
-    form {
-      background-color: var(--card);
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: white;
+      padding: 20px 0;
+      transition: width 0.3s;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 10px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-menu li:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu li.active {
+      background-color: var(--sidebar-active);
+    }
+
+    .sidebar-menu li i {
+      width: 24px;
+      text-align: center;
+    }
+
+    .main-panel {
+      flex-grow: 1;
       padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Estilos dos formulários */
+    .form-section {
+      display: none;
+      background-color: var(--card);
+      padding: 30px;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .form-section.active {
+      display: block;
     }
 
     h2, h3 {
       margin-top: 0;
       color: var(--text);
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .form-group {
       margin-bottom: 15px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     label {
@@ -243,15 +309,25 @@
 
     input, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
       background: white;
     }
 
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
     button {
       padding: 10px 15px;
-      background-color: var(--button);
       color: white;
       border: none;
       border-radius: 5px;
@@ -259,30 +335,95 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 14px;
+      transition: background-color 0.3s;
     }
 
-    button:hover {
+    .btn-save {
+      background-color: var(--button-save);
+    }
+
+    .btn-save:hover {
+      background-color: var(--button-save-hover);
+    }
+
+    .btn-export {
+      background-color: var(--button);
+    }
+
+    .btn-export:hover {
       background-color: var(--button-hover);
+    }
+
+    .btn-calculate {
+      background-color: #2196F3;
+    }
+
+    .btn-calculate:hover {
+      background-color: #0b7dda;
     }
 
     .inline-buttons {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      margin-top: 20px;
+      justify-content: center;
     }
 
-    @media (max-width: 600px) {
+    /* Ícones personalizados */
+    .icon-fornecedor {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>');
+      width: 20px;
+      height: 20px;
+      background-size: contain;
+    }
+
+    .icon-frota {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM19 17H5v-5h14v5z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>');
+      width: 20px;
+      height: 20px;
+      background-size: contain;
+    }
+
+    .icon-pesagem {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3V8z"/></svg>');
+      width: 20px;
+      height: 20px;
+      background-size: contain;
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar-menu li {
+        padding: 10px 15px;
+        white-space: nowrap;
+      }
+
       header h1 {
         font-size: 20px;
       }
 
-      form {
-        padding: 15px;
+      .form-section {
+        padding: 20px 15px;
       }
 
-      .inline-buttons {
+      .form-row {
         flex-direction: column;
+        gap: 0;
       }
     }
   </style>
@@ -326,131 +467,184 @@
       </label>
     </header>
 
-    <main>
-      <form id="formFornecedor">
-        <h2>Cadastro de Fornecedores</h2>
-        <div class="form-group">
-          <label>Nome da Empresa:</label>
-          <input type="text" name="empresa">
-        </div>
-        <div class="form-group">
-          <label>CNPJ:</label>
-          <input type="text" name="cnpj">
-        </div>
-        <div class="form-group">
-          <label>Inscrição Estadual:</label>
-          <input type="text" name="ie">
-        </div>
-        <div class="form-group">
-          <label>CNAE:</label>
-          <input type="text" name="cnae">
-        </div>
-        <div class="form-group">
-          <label>Dados Bancários:</label>
-          <input type="text" name="banco">
-        </div>
-        <div class="form-group">
-          <label>Tipos de Fluidos Fornecidos:</label>
-          <input type="text" name="fluidos">
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="exportarFornecedor()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
+    <div class="app-container">
+      <!-- Menu lateral -->
+      <nav class="sidebar">
+        <ul class="sidebar-menu">
+          <li class="active" onclick="showSection('fornecedor')">
+            <span class="icon-fornecedor"></span>
+            <span>Fornecedores</span>
+          </li>
+          <li onclick="showSection('frota')">
+            <span class="icon-frota"></span>
+            <span>Frota e Motoristas</span>
+          </li>
+          <li onclick="showSection('pesagem')">
+            <span class="icon-pesagem"></span>
+            <span>Registro de Pesagem</span>
+          </li>
+        </ul>
+      </nav>
 
-      <form id="formFrota">
-        <h2>Cadastro de Frota e Motoristas</h2>
-        <h3>Dados do Caminhão</h3>
-        <div class="form-group">
-          <label>Placa:</label>
-          <input type="text" name="placa">
-        </div>
-        <div class="form-group">
-          <label>Peso do Veículo (kg):</label>
-          <input type="number" name="peso">
-        </div>
-        <div class="form-group">
-          <label>Número de Eixos:</label>
-          <input type="number" name="eixos">
-        </div>
-        <div class="form-group">
-          <label>Número do Chassi:</label>
-          <input type="text" name="chassi">
-        </div>
-        <div class="form-group">
-          <label>Ano:</label>
-          <input type="number" name="ano">
-        </div>
-        <div class="form-group">
-          <label>Marca:</label>
-          <input type="text" name="marca">
-        </div>
-        <div class="form-group">
-          <label>Capacidade Máxima (kg):</label>
-          <input type="number" name="capacidade">
-        </div>
+      <!-- Painel principal -->
+      <div class="main-panel">
+        <!-- Seção de Fornecedores -->
+        <form id="formFornecedor" class="form-section active">
+          <h2><i class="fas fa-truck"></i> Cadastro de Fornecedores</h2>
+          <div class="form-group">
+            <label>Nome da Empresa:</label>
+            <input type="text" name="empresa">
+          </div>
+          <div class="form-group">
+            <label>CNPJ:</label>
+            <input type="text" name="cnpj">
+          </div>
+          <div class="form-group">
+            <label>Inscrição Estadual:</label>
+            <input type="text" name="ie">
+          </div>
+          <div class="form-group">
+            <label>CNAE:</label>
+            <input type="text" name="cnae">
+          </div>
+          <div class="form-group">
+            <label>Dados Bancários:</label>
+            <input type="text" name="banco">
+          </div>
+          <div class="form-group">
+            <label>Tipos de Fluidos Fornecidos:</label>
+            <input type="text" name="fluidos">
+          </div>
+          <div class="inline-buttons">
+            <button type="button" class="btn-save" onclick="salvarFornecedor()"><i class="fas fa-save"></i> Salvar</button>
+            <button type="button" class="btn-export" onclick="exportarFornecedor()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
 
-        <h3>Dados do Motorista</h3>
-        <div class="form-group">
-          <label>CPF:</label>
-          <input type="text" name="cpf">
-        </div>
-        <div class="form-group">
-          <label>RG:</label>
-          <input type="text" name="rg">
-        </div>
-        <div class="form-group">
-          <label>Data de Nascimento:</label>
-          <input type="date" name="nascimento">
-        </div>
-        <div class="form-group">
-          <label>Nº da CNH:</label>
-          <input type="text" name="cnh">
-        </div>
-        <div class="form-group">
-          <label>Nº da Carteira de Trabalho:</label>
-          <input type="text" name="ctps">
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="exportarFrota()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
+        <!-- Seção de Frota -->
+        <form id="formFrota" class="form-section">
+          <h2><i class="fas fa-truck-moving"></i> Cadastro de Frota e Motoristas</h2>
+          
+          <h3>Dados do Caminhão</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Placa:</label>
+              <input type="text" name="placa">
+            </div>
+            <div class="form-group">
+              <label>Peso do Veículo (kg):</label>
+              <input type="number" name="peso">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Número de Eixos:</label>
+              <input type="number" name="eixos">
+            </div>
+            <div class="form-group">
+              <label>Número do Chassi:</label>
+              <input type="text" name="chassi">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ano:</label>
+              <input type="number" name="ano">
+            </div>
+            <div class="form-group">
+              <label>Marca:</label>
+              <input type="text" name="marca">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Capacidade Máxima (kg):</label>
+            <input type="number" name="capacidade">
+          </div>
 
-      <form id="formPesagem">
-        <h2>Registro da Pesagem</h2>
-        <div class="form-group">
-          <label>Placa do Caminhão:</label>
-          <input type="text" name="placa_verificacao" required>
-        </div>
-        <div class="form-group">
-          <label>CPF do Motorista:</label>
-          <input type="text" name="cpf_verificacao" required>
-        </div>
-        <div class="form-group">
-          <label>Tipo de Fluído Entregue:</label>
-          <input type="text" name="fluido_entregue" required>
-        </div>
-        <div class="form-group">
-          <label>Peso Bruto (kg):</label>
-          <input type="number" id="peso_bruto" required>
-        </div>
-        <div class="form-group">
-          <label>Tara (kg):</label>
-          <input type="number" id="tara" required>
-        </div>
-        <div class="form-group">
-          <label>Quantidade de Fluído (calculada):</label>
-          <input type="number" id="quantidade_fluido" readonly>
-        </div>
-        <div class="inline-buttons">
-          <button type="button" onclick="calcularFluido()"><i class="fas fa-balance-scale"></i> Calcular</button>
-          <button type="button" onclick="exportarPesagem()"><i class="fas fa-file-export"></i> Exportar</button>
-        </div>
-      </form>
-    </main>
+          <h3>Dados do Motorista</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>CPF:</label>
+              <input type="text" name="cpf">
+            </div>
+            <div class="form-group">
+              <label>RG:</label>
+              <input type="text" name="rg">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data de Nascimento:</label>
+              <input type="date" name="nascimento">
+            </div>
+            <div class="form-group">
+              <label>Nº da CNH:</label>
+              <input type="text" name="cnh">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Nº da Carteira de Trabalho:</label>
+            <input type="text" name="ctps">
+          </div>
+          
+          <div class="inline-buttons">
+            <button type="button" class="btn-save" onclick="salvarFrota()"><i class="fas fa-save"></i> Salvar</button>
+            <button type="button" class="btn-export" onclick="exportarFrota()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
+
+        <!-- Seção de Pesagem -->
+        <form id="formPesagem" class="form-section">
+          <h2><i class="fas fa-balance-scale-right"></i> Registro da Pesagem</h2>
+          <div class="form-group">
+            <label>Placa do Caminhão:</label>
+            <input type="text" name="placa_verificacao" required>
+          </div>
+          <div class="form-group">
+            <label>CPF do Motorista:</label>
+            <input type="text" name="cpf_verificacao" required>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Fluído Entregue:</label>
+            <input type="text" name="fluido_entregue" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Peso Bruto (kg):</label>
+              <input type="number" id="peso_bruto" required>
+            </div>
+            <div class="form-group">
+              <label>Tara (kg):</label>
+              <input type="number" id="tara" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Quantidade de Fluído (calculada):</label>
+            <input type="number" id="quantidade_fluido" readonly>
+          </div>
+          <div class="inline-buttons">
+            <button type="button" class="btn-calculate" onclick="calcularFluido()"><i class="fas fa-balance-scale"></i> Calcular</button>
+            <button type="button" class="btn-save" onclick="salvarPesagem()"><i class="fas fa-save"></i> Salvar</button>
+            <button type="button" class="btn-export" onclick="exportarPesagem()"><i class="fas fa-file-export"></i> Exportar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script>
+    // Banco de dados simulado
+    const database = {
+      fornecedores: [],
+      frota: [],
+      pesagens: []
+    };
+
     // Função para fazer login (simplificada para demonstração)
     function login() {
       const username = document.getElementById('username').value;
@@ -471,6 +665,83 @@
       document.body.classList.toggle('dark');
     }
 
+    // Função para mostrar a seção selecionada
+    function showSection(sectionId) {
+      // Esconde todas as seções
+      document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Mostra a seção selecionada
+      document.getElementById('form' + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.add('active');
+      
+      // Atualiza o menu ativo
+      document.querySelectorAll('.sidebar-menu li').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+    }
+
+    // Funções para salvar dados
+    function salvarFornecedor() {
+      const form = document.getElementById('formFornecedor');
+      const fornecedor = {
+        empresa: form.empresa.value,
+        cnpj: form.cnpj.value,
+        ie: form.ie.value,
+        cnae: form.cnae.value,
+        banco: form.banco.value,
+        fluidos: form.fluidos.value,
+        dataCadastro: new Date().toISOString()
+      };
+      
+      database.fornecedores.push(fornecedor);
+      alert('Fornecedor salvo com sucesso!');
+      form.reset();
+    }
+
+    function salvarFrota() {
+      const form = document.getElementById('formFrota');
+      const frota = {
+        placa: form.placa.value,
+        peso: form.peso.value,
+        eixos: form.eixos.value,
+        chassi: form.chassi.value,
+        ano: form.ano.value,
+        marca: form.marca.value,
+        capacidade: form.capacidade.value,
+        cpf: form.cpf.value,
+        rg: form.rg.value,
+        nascimento: form.nascimento.value,
+        cnh: form.cnh.value,
+        ctps: form.ctps.value,
+        dataCadastro: new Date().toISOString()
+      };
+      
+      database.frota.push(frota);
+      alert('Dados da frota salvos com sucesso!');
+      form.reset();
+    }
+
+    function salvarPesagem() {
+      const form = document.getElementById('formPesagem');
+      const pesagem = {
+        placa: form.placa_verificacao.value,
+        cpf: form.cpf_verificacao.value,
+        fluido: form.fluido_entregue.value,
+        pesoBruto: document.getElementById('peso_bruto').value,
+        tara: document.getElementById('tara').value,
+        quantidade: document.getElementById('quantidade_fluido').value,
+        dataPesagem: new Date().toISOString()
+      };
+      
+      database.pesagens.push(pesagem);
+      alert('Pesagem registrada com sucesso!');
+      form.reset();
+      document.getElementById('quantidade_fluido').value = '';
+    }
+
+    // Funções para exportar dados
     function aplicarEstilo(ws, dados) {
       const range = XLSX.utils.decode_range(ws['!ref']);
       for (let R = range.s.r; R <= range.e.r; ++R) {
@@ -501,60 +772,42 @@
     }
 
     function exportarFornecedor() {
-      const form = document.getElementById('formFornecedor');
-      const data = [{
-        "Empresa": form.empresa.value,
-        "CNPJ": form.cnpj.value,
-        "Inscrição Estadual": form.ie.value,
-        "CNAE": form.cnae.value,
-        "Dados Bancários": form.banco.value,
-        "Fluidos Fornecidos": form.fluidos.value
-      }];
-      const ws = XLSX.utils.json_to_sheet(data);
-      aplicarEstilo(ws, data);
+      if (database.fornecedores.length === 0) {
+        alert('Nenhum fornecedor cadastrado para exportar!');
+        return;
+      }
+      
+      const ws = XLSX.utils.json_to_sheet(database.fornecedores);
+      aplicarEstilo(ws, database.fornecedores);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Fornecedor");
-      XLSX.writeFile(wb, "cadastro_fornecedor.xlsx");
+      XLSX.utils.book_append_sheet(wb, ws, "Fornecedores");
+      XLSX.writeFile(wb, "fornecedores.xlsx");
     }
 
     function exportarFrota() {
-      const form = document.getElementById('formFrota');
-      const data = [{
-        "Placa": form.placa.value,
-        "Peso": form.peso.value,
-        "Eixos": form.eixos.value,
-        "Chassi": form.chassi.value,
-        "Ano": form.ano.value,
-        "Marca": form.marca.value,
-        "Capacidade": form.capacidade.value,
-        "CPF": form.cpf.value,
-        "RG": form.rg.value,
-        "Nascimento": form.nascimento.value,
-        "CNH": form.cnh.value,
-        "CTPS": form.ctps.value
-      }];
-      const ws = XLSX.utils.json_to_sheet(data);
-      aplicarEstilo(ws, data);
+      if (database.frota.length === 0) {
+        alert('Nenhum dado de frota cadastrado para exportar!');
+        return;
+      }
+      
+      const ws = XLSX.utils.json_to_sheet(database.frota);
+      aplicarEstilo(ws, database.frota);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Frota");
-      XLSX.writeFile(wb, "cadastro_frota_motorista.xlsx");
+      XLSX.writeFile(wb, "frota_motoristas.xlsx");
     }
 
     function exportarPesagem() {
-      const form = document.getElementById('formPesagem');
-      const data = [{
-        "Placa": form.placa_verificacao.value,
-        "CPF Motorista": form.cpf_verificacao.value,
-        "Fluído Entregue": form.fluido_entregue.value,
-        "Peso Bruto": document.getElementById('peso_bruto').value,
-        "Tara": document.getElementById('tara').value,
-        "Quantidade Fluído": document.getElementById('quantidade_fluido').value
-      }];
-      const ws = XLSX.utils.json_to_sheet(data);
-      aplicarEstilo(ws, data);
+      if (database.pesagens.length === 0) {
+        alert('Nenhuma pesagem registrada para exportar!');
+        return;
+      }
+      
+      const ws = XLSX.utils.json_to_sheet(database.pesagens);
+      aplicarEstilo(ws, database.pesagens);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Pesagem");
-      XLSX.writeFile(wb, "registro_pesagem.xlsx");
+      XLSX.utils.book_append_sheet(wb, ws, "Pesagens");
+      XLSX.writeFile(wb, "registros_pesagem.xlsx");
     }
 
     function calcularFluido() {
